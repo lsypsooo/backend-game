@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model game {
+  id_game              Int           @id @default(autoincrement())
+  title                String        @db.VarChar(100)
+  price                Float
+  tags                 Int
+  rating               Float
+  description          String        @db.Text
+  image                String        @db.Text
+  tags_game_tagsTotags tags          @relation("game_tagsTotags", fields: [tags], references: [id_tags], onUpdate: Restrict, map: "game_ibfk_1")
+  transaction          transaction[]
+
+  @@index([tags], map: "tags")
+}
+
+model tags {
+  id_tags              Int    @id @default(autoincrement())
+  name                 String @db.VarChar(100)
+  game_game_tagsTotags game[] @relation("game_tagsTotags")
+}
+
+model users {
+  username    String        @id @db.VarChar(100)
+  fullname    String        @db.VarChar(100)
+  email       String        @db.VarChar(100)
+  phone       String        @db.VarChar(100)
+  password    String        @db.VarChar(100)
+  role        Int           @default(2) @db.TinyInt
+  transaction transaction[]
+}
+
+model transaction {
+  id_transaction Int    @id @default(autoincrement())
+  username       String @db.VarChar(100)
+  id_game        Int
+  total          Float
+  status         Int    @default(1) @db.SmallInt
+  users          users  @relation(fields: [username], references: [username], onUpdate: Restrict, map: "transaction_ibfk_1")
+  game           game   @relation(fields: [id_game], references: [id_game], onUpdate: Restrict, map: "transaction_ibfk_2")
+
+  @@index([id_game], map: "id_game")
+  @@index([username], map: "username")
+}
