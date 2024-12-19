@@ -6,20 +6,20 @@ exports.insert = async (req, res) => {
 
     const body = req.body
 
-    const { rating, price, tags } = body
+    const { rating, price, tags, title,description } = body
 
-    const data = {
-      ...body,
-      image: req.file.filename,
+    let image;
+
+
+    await prisma.game.create({
+      data:{
       price: Number(price),
       rating: Number(rating),
-      tags: Number(tags)
-
-
-    }
-    console.log(data)
-    await prisma.game.create({
-      data
+      tags: Number(tags),
+      title: title,
+      description: description,
+      image: req.file.filename
+      }
     })
     res.json({
       status: true,
